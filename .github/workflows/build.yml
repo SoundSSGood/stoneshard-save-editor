@@ -14,23 +14,17 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
     - name: Restore NuGet packages
-      run: nuget restore StoneshardSaveEditor.csproj
+      run: nuget restore StoneshardSaveEditor.sln
 
-    - name: Build the project
-      run: msbuild StoneshardSaveEditor.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
-
-    - name: List files (for debugging)
-      run: dir /s bin\Release
+    - name: Build the solution
+      run: msbuild StoneshardSaveEditor.sln /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: StoneshardSaveEditor
         path: |
-          bin\Release\*.exe
-          bin\Release\*.dll
-          bin\Release\*.config
+          **\bin\Release\*.exe
+          **\bin\Release\*.dll
+          **\bin\Release\*.config
