@@ -11,26 +11,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
-    - name: Restore NuGet packages
-      run: nuget restore StoneshardSaveEditor.csproj
+    - name: Add msbuild to PATH
+      run: |
+        $msbuildPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\Current\Bin\MSBuild.exe
+        $env:PATH = "$msbuildPath;$env:PATH"
+        echo "MSBuild found at: $msbuildPath"
 
     - name: Build the project
-      run: msbuild StoneshardSaveEditor.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
-
-    - name: List files (for debugging)
-      run: dir /s bin\Release
+      run: msbuild StoneshardSaveEditor.csproj /p:Configuration=Release /p:Platform="Any CPU"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: StoneshardSaveEditor
-        path: |
-          bin\Release\*.exe
-          bin\Release\*.dll
-          bin\Release\*.config
+        path: bin\Release\
